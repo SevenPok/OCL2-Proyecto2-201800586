@@ -51,14 +51,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analizador\Gramatica.cs" />
+    <Compile Include="Analizador\Analizador.cs" />
+    <Compile Include="Arbol\Constante.cs" />
+    <Compile Include="Arbol\Entorno.cs" />
+    <Compile Include="Arbol\Expresiones\Aritmetica.cs" />
+    <Compile Include="Arbol\Expresiones\Identificador.cs" />
+    <Compile Include="Arbol\Expresiones\Logica.cs" />
+    <Compile Include="Arbol\Expresiones\Primitivo.cs" />
+    <Compile Include="Arbol\Expresiones\Relacional.cs" />
+    <Compile Include="Arbol\Instrucciones\Main.cs" />
+    <Compile Include="Arbol\Instrucciones\Print.cs" />
+    <Compile Include="Arbol\Interfaces\Expresion.cs" />
+    <Compile Include="Arbol\Interfaces\Instruccion.cs" />
+    <Compile Include="Arbol\Simbolo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Graficar\Dot.cs" />
+    <Compile Include="Graficar\GenerarGrafo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -84,5 +102,6 @@
   <ItemGroup>
     <Content Include="lib\Irony.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
