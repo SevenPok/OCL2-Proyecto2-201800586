@@ -10,6 +10,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Interfaces
     {
         int linea { get; set; }
         int columna { get; set; }
-        Object traducir(Entorno ts);
+        String trueLabel { get; set; }
+        String falseLabel { get; set; }
+        Return traducir(Entorno ts);
     }
 }

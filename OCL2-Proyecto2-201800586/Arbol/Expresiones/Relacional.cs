@@ -11,6 +11,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
     {
         public int linea { get; set; }
         public int columna { get; set; }
+        public string trueLabel { get; set; }
+        public string falseLabel { get; set; }
 
         private Expresion left, right;
         private Constante.RelacionalSigno type;
@@ -22,11 +24,53 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
             this.type = type;
             this.linea = linea;
             this.columna = columna;
+            trueLabel = falseLabel = "";
         }
 
-        public object traducir(Entorno ts)
+        public Return traducir(Entorno ts)
         {
-            return null;
+            Return leftV = this.left != null ? this.left.traducir(ts) : null;
+            Return rightV = this.right.traducir(ts);
+
+            Generator generator = Generator.getInstance();
+            Return result = new Return(null, false, Constante.Type.BOOLEAN);
+
+
+            if(this.trueLabel == "")
+            {
+                this.trueLabel = generator.newLabel();
+            }
+            if(this.falseLabel == "")
+            {
+                this.falseLabel = generator.newLabel();
+            }
+            generator.addIf(leftV.valueC, rightV.valueC, getSymbol(), trueLabel);
+            generator.addGoto(this.falseLabel);
+
+            result.trueLabel = trueLabel;
+            result.falseLabel = falseLabel;
+            return result;
+
+        }
+
+        public String getSymbol()
+        {
+            switch (this.type)
+            {
+                case Constante.RelacionalSigno.DIFERENTE:
+                    return "!=";
+                case Constante.RelacionalSigno.IGUAL:
+                    return "==";
+                case Constante.RelacionalSigno.MAYORIGUAL:
+                    return ">=";
+                case Constante.RelacionalSigno.MAYOR:
+                    return ">";
+                case Constante.RelacionalSigno.MENOR:
+                    return "<";
+                case Constante.RelacionalSigno.MENORIGUAL:
+                    return "<=";
+            }
+            return "";
         }
     }
 }

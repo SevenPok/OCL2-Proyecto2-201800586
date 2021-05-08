@@ -7,26 +7,24 @@ using System.Threading.Tasks;
 
 namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
 {
-    class Main : Instruccion
+    class Declaraciones : Instruccion
     {
         public int linea { get; set; }
         public int columna { get; set; }
         public string trueLabel { get; set; }
         public string falseLabel { get; set; }
 
-        private LinkedList<Instruccion> instrucciones;
+        private LinkedList<Declaracion> declaraciones;
 
-        public Main(LinkedList<Instruccion> instrucciones, int linea, int columna)
+        public Declaraciones(LinkedList<Declaracion> declaraciones)
         {
-            this.instrucciones = instrucciones;
-            this.linea = linea;
-            this.columna = columna;
+            this.declaraciones = declaraciones;
         }
         public Return traducir(Entorno ts)
         {
-            foreach(Instruccion i in instrucciones)
+            foreach (Instruccion declaracion in declaraciones)
             {
-                i.traducir(ts);
+                declaracion.traducir(ts);
             }
             return null;
         }

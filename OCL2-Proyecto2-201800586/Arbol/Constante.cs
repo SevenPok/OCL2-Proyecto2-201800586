@@ -15,7 +15,8 @@ namespace OCL2_Proyecto2_201800586.Arbol
             DOUBLE,
             BOOLEAN,
             OBJETO,
-            ARRAY
+            ARRAY,
+            VOID
         }
         
         public enum AritmeticaSigno
@@ -44,24 +45,34 @@ namespace OCL2_Proyecto2_201800586.Arbol
             NOT
         }
 
-        public Type getTipo(object o)
+        public static Type getTipo(String o)
         {
-            if (o is bool)
+            if (o == "boolean")
             {
                 return Type.BOOLEAN;
             }
-            else if (o is int)
+            else if (o == "integer")
             {
                 return Type.INT;
             }
-            else if (o is double)
+            else if (o == "real")
             {
                 return Type.DOUBLE;
             }
-            else
+            else if(o == "string")
             {
                 return Type.STRING;
             }
+            else
+            {
+                return Type.VOID;
+            }
+        }
+
+        public static bool sameType(Constante.Type left, Constante.Type right)
+        {
+            if (left == right) return true;
+            return false;
         }
     }
 }

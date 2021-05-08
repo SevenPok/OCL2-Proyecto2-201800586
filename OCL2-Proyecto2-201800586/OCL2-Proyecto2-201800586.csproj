@@ -54,16 +54,33 @@
     <Compile Include="Analizador\Analizador.cs" />
     <Compile Include="Arbol\Constante.cs" />
     <Compile Include="Arbol\Entorno.cs" />
+    <Compile Include="Arbol\Error.cs" />
+    <Compile Include="Arbol\Expresiones\AccesoFuncion.cs" />
     <Compile Include="Arbol\Expresiones\Aritmetica.cs" />
     <Compile Include="Arbol\Expresiones\Identificador.cs" />
     <Compile Include="Arbol\Expresiones\Logica.cs" />
     <Compile Include="Arbol\Expresiones\Primitivo.cs" />
     <Compile Include="Arbol\Expresiones\Relacional.cs" />
+    <Compile Include="Arbol\Generator.cs" />
+    <Compile Include="Arbol\Instrucciones\Asignacion.cs" />
+    <Compile Include="Arbol\Instrucciones\Declaracion.cs" />
+    <Compile Include="Arbol\Instrucciones\Declaraciones.cs" />
+    <Compile Include="Arbol\Instrucciones\DeclaracionFuncion.cs" />
+    <Compile Include="Arbol\Instrucciones\DoWhile.cs" />
+    <Compile Include="Arbol\Instrucciones\Else.cs" />
+    <Compile Include="Arbol\Instrucciones\Exit.cs" />
+    <Compile Include="Arbol\Instrucciones\For.cs" />
+    <Compile Include="Arbol\Instrucciones\If.cs" />
+    <Compile Include="Arbol\Instrucciones\LlamarFucnion.cs" />
     <Compile Include="Arbol\Instrucciones\Main.cs" />
+    <Compile Include="Arbol\Instrucciones\Parametro.cs" />
     <Compile Include="Arbol\Instrucciones\Print.cs" />
+    <Compile Include="Arbol\Instrucciones\While.cs" />
     <Compile Include="Arbol\Interfaces\Expresion.cs" />
     <Compile Include="Arbol\Interfaces\Instruccion.cs" />
+    <Compile Include="Arbol\Interfaces\Return.cs" />
     <Compile Include="Arbol\Simbolo.cs" />
+    <Compile Include="Arbol\SimboloFuncion.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

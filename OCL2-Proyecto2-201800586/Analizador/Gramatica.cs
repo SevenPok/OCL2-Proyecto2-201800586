@@ -13,8 +13,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
         public Gramatica() : base(caseSensitive: false) {
             #region ER
             StringLiteral CADENA = new StringLiteral("Cadena", "'");
-            var ENTERO = new NumberLiteral("Entero");
-            var DECIMAL = new RegexBasedTerminal("Decimal", "[0-9]+'.'[0-9]+");
+            var NUMERO = new NumberLiteral("Numero");
             IdentifierTerminal IDENTIFICADOR = new IdentifierTerminal("ID");
             CommentTerminal comentarioLinea = new CommentTerminal("comentarioLinea", "//", "\n", "\r\n");
             CommentTerminal comentarioBloque = new CommentTerminal("comentarioBloque", "(*", "*)");
@@ -88,7 +87,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
             var INTEGER = ToTerm("integer");
             var REAL = ToTerm("real");
             var BOOLEAN = ToTerm("boolean");
-            var VOID = ToTerm("void");
+            //var VOID = ToTerm("void");
 
             var CONST = ToTerm("const");
 
@@ -100,7 +99,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
 
             var PR_ARRAY = ToTerm("array");
 
-            var graficar_ts = ToTerm("graficar_ts");
+            //var graficar_ts = ToTerm("graficar_ts");
             var EXIT = ToTerm("Exit");
 
             RegisterOperators(1, Associativity.Left, OR);
@@ -138,8 +137,8 @@ namespace OCL2_Proyecto2_201800586.Analizador
             NonTerminal SENTENCIA = new NonTerminal("Sentencia");
             NonTerminal SENTENCIAS = new NonTerminal("Sentencias");
             NonTerminal IF = new NonTerminal("If");
-            NonTerminal ELSE_IF = new NonTerminal("Lista_if");
-            NonTerminal ELSEIF = new NonTerminal("Else_If");
+            //NonTerminal ELSE_IF = new NonTerminal("Lista_if");
+            //NonTerminal ELSEIF = new NonTerminal("Else_If");
             NonTerminal SWITCH = new NonTerminal("Switch");
             NonTerminal CASOS = new NonTerminal("Casos");
             NonTerminal CASO = new NonTerminal("Caso");
@@ -258,12 +257,12 @@ namespace OCL2_Proyecto2_201800586.Analizador
 
             IF.Rule = PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA
                     | PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA + PR_ELSE + BLOQUE_SENTENCIA
-                    | PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA + ELSE_IF
-                    | PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA + ELSE_IF + PR_ELSE + BLOQUE_SENTENCIA;
+                    | PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA + PR_ELSE + IF;
 
-            ELSE_IF.Rule = MakePlusRule(ELSE_IF, ELSEIF);
 
-            ELSEIF.Rule = PR_ELSE + PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA;
+            //ELSE_IF.Rule = MakePlusRule(ELSE_IF, ELSEIF);
+
+            //ELSEIF.Rule = PR_ELSE + PR_IF + EXPRESION + THEN + BLOQUE_SENTENCIA;
 
             SWITCH.Rule = PR_CASE + EXPRESION + PR_OF + CASOS + DEFAULT + END;
 
@@ -312,8 +311,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
 
             EXPRESION_UNARIA.Rule = MENOS + EXPRESION;
 
-            PRIMITIVA.Rule = ENTERO
-                           | DECIMAL
+            PRIMITIVA.Rule = NUMERO
                            | CADENA
                            | TRUE
                            | FALSE
