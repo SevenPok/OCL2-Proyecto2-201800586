@@ -21,16 +21,16 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
         {
             this.condicion = condicion;
             this.instrucciones = instrucciones;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
         }
         public Return traducir(Entorno ts)
         {
             Generator generator = Generator.getInstance();
             Entorno newEnv = new Entorno(ts);
             generator.addComment("BEGIN Repeat");
-            //newEnv.continue = this.condition.trueLabel = generator.newLabel();
-            //newEnv.break = this.condition.falseLabel = generator.newLabel();
+            newEnv._continue = this.condicion.trueLabel = generator.newLabel();
+            newEnv._break = this.condicion.falseLabel = generator.newLabel();
            
             String verdadero = condicion.falseLabel = generator.newLabel();
             String falso = condicion.trueLabel = generator.newLabel();
@@ -47,7 +47,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
                 generator.addComment("END DoWhile");
                 return null; 
             }
-            throw new Error(this.linea, this.columna, "Semantical", "Condition found not boolean");
+            throw new Error(this.linea, this.columna, "Semantico", "La condicion encontrada no es booelana");
             
         }
     }

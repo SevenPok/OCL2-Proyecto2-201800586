@@ -117,6 +117,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
 
             #region No Terminales
             NonTerminal INI = new NonTerminal("Ini");
+            NonTerminal programa = new NonTerminal("Programa");
             NonTerminal INSTRUCCION = new NonTerminal("Instrucion");
             NonTerminal INSTRUCCIONES = new NonTerminal("Instrucciones");
             NonTerminal EXPRESION = new NonTerminal("Expresion");
@@ -172,7 +173,10 @@ namespace OCL2_Proyecto2_201800586.Analizador
             #endregion
 
             #region Gramatica
-            INI.Rule = INSTRUCCIONES;
+            INI.Rule = programa + INSTRUCCIONES;
+
+            programa.Rule = PROGRAM + IDENTIFICADOR + PTCOMA
+                          | Empty;
 
             INSTRUCCIONES.Rule = MakePlusRule(INSTRUCCIONES, INSTRUCCION);
 
@@ -186,7 +190,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
 
             MAIN.Rule = BLOQUE_SENTENCIA + PUNTO;
 
-            CONSTANTE.Rule = CONST + IDENTIFICADOR + IGUAL + EXPRESION;
+            CONSTANTE.Rule = CONST + IDENTIFICADOR + DOSPT + TIPO + IGUAL + EXPRESION;
 
             ARREGLO.Rule = TYPE + IDENTIFICADOR + IGUAL + PR_ARRAY + CORIZQ + INICIALIZAR_DIMENSIONES + CORDER + PR_OF + TIPO;
 
@@ -344,7 +348,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
             #region Preferencias
             this.Root = INI;
             this.MarkTransient(DECLARAR_ASIGNAR, BLOQUE_SENTENCIA, TIPO, ACCESO);
-            this.MarkPunctuation(PTCOMA, PARDER, PARIZQ, CORDER, CORIZQ, COMA, PUNTO, BEGIN, END);
+            this.MarkPunctuation(PTCOMA, PARDER, PARIZQ, CORDER, CORIZQ, COMA, PUNTO, BEGIN, END, programa);
             #endregion
         }
     }

@@ -15,8 +15,10 @@ namespace OCL2_Proyecto2_201800586.Arbol
         public bool isConst;
         public bool isGlobal;
         public bool isHeap;
+        public int linea;
+        public int columna;
 
-        public Simbolo(Constante.Type type, String id, int position, bool isConst, bool isGlobal, bool isHeap)
+        public Simbolo(Constante.Type type, String id, int position, bool isConst, bool isGlobal, bool isHeap, int linea, int columna)
         {
             this.type = type;
             this.id = id;
@@ -24,6 +26,8 @@ namespace OCL2_Proyecto2_201800586.Arbol
             this.isConst = isConst;
             this.isGlobal = isGlobal;
             this.isHeap = isHeap;
+            this.linea = linea;
+            this.columna = columna;
         }
     }
 }

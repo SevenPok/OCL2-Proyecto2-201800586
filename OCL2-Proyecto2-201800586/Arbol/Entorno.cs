@@ -9,8 +9,8 @@ namespace OCL2_Proyecto2_201800586.Arbol
 {
     class Entorno
     {
-        private Dictionary<String, Simbolo> variables;
-        private Dictionary<String, SimboloFuncion> funciones;
+        public Dictionary<String, Simbolo> variables;
+        public Dictionary<String, SimboloFuncion> funciones;
         public Entorno prev;
         public int size;
         public string _continue;
@@ -38,20 +38,20 @@ namespace OCL2_Proyecto2_201800586.Arbol
             variables.Add(identificador, simbolo);
         }
 
-        public Simbolo addVariable(String identificador, Constante.Type type, bool isConst, bool isHeap)
+        public Simbolo addVariable(String identificador, Constante.Type type, bool isConst, bool isHeap, int linea, int columna)
         {
-            if (variables.ContainsKey(identificador))
+            if (this.variables.ContainsKey(identificador))
             {
                 return null;
             }
-            Simbolo simbolo = new Simbolo(type, identificador, this.size++, isConst, this.prev == null, isHeap);
+            Simbolo simbolo = new Simbolo(type, identificador, this.size++, isConst, this.prev == null, isHeap, linea, columna);
             variables.Add(identificador, simbolo);
             return simbolo;
         }
 
         public bool existeVariable(String identificador)
         {
-            if (variables.ContainsKey(identificador))
+            if (this.variables.ContainsKey(identificador))
             {
                 return true;
             }
@@ -104,5 +104,6 @@ namespace OCL2_Proyecto2_201800586.Arbol
             this._return = ret;
             this.actualFunction = actualFunction;
         }
+
     }
 }

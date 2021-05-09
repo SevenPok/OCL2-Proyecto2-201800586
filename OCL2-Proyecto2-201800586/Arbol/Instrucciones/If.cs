@@ -23,8 +23,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
             this.condicion = condicion;
             this.instrucciones = instrucciones;
             this.elseif = elseif;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
         }
         public Return traducir(Entorno ts)
         {
@@ -55,7 +55,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
             }
             else
             {
-                throw new Error(this.linea, this.columna, "Semantical", "Condition found not boolean");
+                throw new Error(this.linea, this.columna, "Semantico", "La condicion encontrada no es booleana");
             }
             generator.addComment("END if");
             return null;

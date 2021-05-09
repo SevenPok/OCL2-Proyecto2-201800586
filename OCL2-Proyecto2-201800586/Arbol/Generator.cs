@@ -111,6 +111,7 @@ namespace OCL2_Proyecto2_201800586.Arbol
             this.code = new LinkedList<String>();
             this.temps = new LinkedList<String>();
             this.tempStorage = new LinkedList<String>();
+            this.functions = new LinkedList<String>();
             this.native = new bool[] { false, false, false, false, false, false, false };
         }
         public void addComment(string comment)

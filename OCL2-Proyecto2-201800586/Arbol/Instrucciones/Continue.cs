@@ -7,27 +7,22 @@ using System.Threading.Tasks;
 
 namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
 {
-    class Else : Instruccion
+    class Continue : Instruccion
     {
         public int linea { get; set; }
         public int columna { get; set; }
         public string trueLabel { get; set; }
         public string falseLabel { get; set; }
 
-        private LinkedList<Instruccion> instruccions;
-
-        public Else(LinkedList<Instruccion> instruccions, int linea, int columna)
+        public Continue(int linea, int columna)
         {
-            this.instruccions = instruccions;
             this.linea = linea + 1;
             this.columna = columna + 1;
         }
         public Return traducir(Entorno ts)
         {
-            foreach(Instruccion i in instruccions)
-            {
-                i.traducir(ts);
-            }
+            if (ts._continue == null) throw new Error(this.linea, this.columna, "Semantico", "Un 'continue' La declaración solo se puede usar dentro de una declaración de iteración adjunta");
+            Generator.getInstance().addGoto(ts._continue);
             return null;
         }
     }

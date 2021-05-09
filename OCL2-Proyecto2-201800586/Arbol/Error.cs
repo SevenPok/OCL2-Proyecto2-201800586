@@ -18,5 +18,10 @@ namespace OCL2_Proyecto2_201800586.Arbol
             this.type = type;
             this.msg = msg;
         }
+
+        public String toString()
+        {
+            return "linea: " + line + ", columna: " + column + ", tipo: " + type + ", msg: " + msg;
+        }
     }
 }

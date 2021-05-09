@@ -20,8 +20,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
         {
             this.valor = valor;
             this.type = type;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
             trueLabel = falseLabel = "";
         }
         public Return traducir(Entorno ts)
@@ -63,7 +63,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
                     generator.nextHeap();
                     return new Return(temp, true, Constante.Type.STRING);
                 default:
-                    throw new Error(this.linea, this.columna, "Semantical", "No existe el tipo de dato");
+                    throw new Error(this.linea, this.columna, "Semantico", "No existe el tipo de dato");
             }
         }
     }

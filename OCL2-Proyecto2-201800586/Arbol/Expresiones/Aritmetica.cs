@@ -22,8 +22,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
             this.left = left;
             this.right = right;
             this.type = type;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
             trueLabel = falseLabel = "";
         }
 
@@ -31,8 +31,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
         {
             this.right = right;
             this.type = type;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
             trueLabel = falseLabel = "";
         }
         public Return traducir(Entorno ts)
@@ -90,7 +90,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
                 generator.addAntEnv(ts.size.ToString());
                 return new Return(temp, true, Constante.Type.STRING);
             }
-            throw new Error(this.linea, this.columna, "Semantico", "No se puede operar");
+            throw new Error(this.linea, this.columna, "Semantico", "No se puede operar un " + leftValue.type + " con un " + rightValue.type);
         }
     }
 }

@@ -3,43 +3,68 @@ using OCL2_Proyecto2_201800586.Arbol;
 using OCL2_Proyecto2_201800586.Arbol.Expresiones;
 using OCL2_Proyecto2_201800586.Arbol.Instrucciones;
 using OCL2_Proyecto2_201800586.Arbol.Interfaces;
+using OCL2_Proyecto2_201800586.Graficar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace OCL2_Proyecto2_201800586.Analizador
 {
     class Analizador
     {
         private ParseTreeNode raiz;
-        
+        public Entorno global;
+        public LinkedList<Error> errores;
+
         public Analizador(ParseTreeNode raiz)
         {
             this.raiz = raiz;
+            global = new Entorno(null);
+            errores = new LinkedList<Error>();
         }
 
         public void generar()
         {
             LinkedList<Instruccion> AST = instrucciones(raiz.ChildNodes.ElementAt(0));
-            Entorno global = new Entorno(null);
-            
+
+           
+
             Generator generator = Generator.getInstance();
             generator.clearCode();
-            
-                foreach (Instruccion e in AST)
+
+
+            foreach (Instruccion e in AST)
+            {
+                try
                 {
                     if (e is DeclaracionFuncion) e.traducir(global);
                 }
+                catch(Error ex)
+                {
+                    Console.WriteLine(ex.toString());
+                    errores.AddLast(ex);
+                }
+                
+            }
 
-                generator.addBegin("main");
+            generator.addBegin("main");
 
-                foreach (Instruccion e in AST)
+            foreach (Instruccion e in AST)
+            {
+                try
                 {
                     e.traducir(global);
                 }
-                generator.addEnd();
-            
+                catch (Error ex)
+                {
+                    Console.WriteLine(ex.toString());
+                    errores.AddLast(ex);
+                }
+            }
+            generator.addEnd();
+
             string functions = generator.getFunctions();
             String code = generator.getCode();
             Form1.Consola.Text = code + functions;
@@ -62,8 +87,12 @@ namespace OCL2_Proyecto2_201800586.Analizador
             {
                 case "Funcion":
                     return funcion(actual.ChildNodes.ElementAt(0));
+                case "Procedimiento":
+                    return funcion(actual.ChildNodes.ElementAt(0));
                 case "Declaracion":
                     return declaracion(actual.ChildNodes.ElementAt(0));
+                case "Constante":
+                    return declaracionConstante(actual.ChildNodes.ElementAt(0));
                 default:
                     return main(actual.ChildNodes.ElementAt(0));
             }
@@ -94,14 +123,32 @@ namespace OCL2_Proyecto2_201800586.Analizador
                 string token = actual.ChildNodes[1].Token.Text;
                 Constante.Type tipo = Constante.getTipo(actual.ChildNodes[4].Term.ToString());
                 LinkedList<Parametro> parametros = declararParametros(actual.ChildNodes[2]);
-                DeclaracionFuncion func = new DeclaracionFuncion(token, parametros, tipo, sentencias(actual.ChildNodes[6]),actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column);
+                LinkedList<Instruccion> declaraciones = new LinkedList<Instruccion>();
+                if (actual.ChildNodes[5].ChildNodes.Count > 0)
+                {
+                    foreach(ParseTreeNode nodo in actual.ChildNodes[5].ChildNodes)
+                    {
+                        declaraciones.AddLast(instruccion(nodo));
+                    }
+                }
+                DeclaracionFuncion func = new DeclaracionFuncion(token, parametros, tipo, declaraciones, sentencias(actual.ChildNodes[6]),actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column);
                 return func;
             }
             else
             {
-
+                string token = actual.ChildNodes[1].Token.Text;
+                LinkedList<Parametro> parametros = declararParametros(actual.ChildNodes[2]);
+                LinkedList<Instruccion> declaraciones = new LinkedList<Instruccion>();
+                if (actual.ChildNodes[3].ChildNodes.Count > 0)
+                {
+                    foreach (ParseTreeNode nodo in actual.ChildNodes[3].ChildNodes)
+                    {
+                        declaraciones.AddLast(instruccion(nodo));
+                    }
+                }
+                DeclaracionFuncion func = new DeclaracionFuncion(token, parametros, Constante.Type.VOID, declaraciones, sentencias(actual.ChildNodes[4]), actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column);
+                return func;
             }
-            return null;
         }
 
         private LinkedList<Parametro> declararParametros(ParseTreeNode actual)
@@ -115,7 +162,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
                     foreach (ParseTreeNode nodo in hijo.ChildNodes[0].ChildNodes)
                     {
                         Constante.Type tipo = Constante.getTipo(hijo.ChildNodes[2].Token.Text);
-                        parametros.AddLast(new Parametro(nodo.Token.Text, tipo));
+                        parametros.AddLast(new Parametro(nodo.Token.Text, tipo, nodo.Token.Location.Line, nodo.Token.Location.Column));
                     }
                 }
                 else
@@ -123,7 +170,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
                     foreach (ParseTreeNode nodo in hijo.ChildNodes[1].ChildNodes)
                     {
                         Constante.Type tipo = Constante.getTipo(hijo.ChildNodes[3].Token.Text);
-                        parametros.AddLast(new Parametro(nodo.Token.Text, tipo));
+                        parametros.AddLast(new Parametro(nodo.Token.Text, tipo, nodo.Token.Location.Line, nodo.Token.Location.Column));
                     }
                 }
             }
@@ -161,13 +208,17 @@ namespace OCL2_Proyecto2_201800586.Analizador
                     return exit(actual.ChildNodes.ElementAt(0));
                 case "Call_Funcion":
                     return llamarFucnion(actual.ChildNodes.ElementAt(0));
+                case "continue":
+                    return CONTINUE(actual.ChildNodes.ElementAt(0));
+                case "break":
+                    return BREAK(actual.ChildNodes.ElementAt(0));
                 default:
                     return imprimir(actual.ChildNodes.ElementAt(0));
             }
         }
 
 
-        public Instruccion llamarFucnion(ParseTreeNode actual)
+        private Instruccion llamarFucnion(ParseTreeNode actual)
         {
             return new LlamarFucnion(callFucnion(actual));
         }
@@ -210,9 +261,16 @@ namespace OCL2_Proyecto2_201800586.Analizador
             return new Declaraciones(lista);
         }
 
+        private Instruccion declaracionConstante(ParseTreeNode actual)
+        {
+            String token = actual.ChildNodes.ElementAt(1).Token.Text;
+            return new Declaracion(true, token, Constante.getTipo(actual.ChildNodes[3].Term.ToString()), expresion(actual.ChildNodes[5]), actual.ChildNodes.ElementAt(1).Token.Location.Line, actual.ChildNodes.ElementAt(1).Token.Location.Column);
+        }
+
         private Instruccion asignacion(ParseTreeNode actual)
         {
-            return new Asignacion(actual.ChildNodes.ElementAt(0).Token.Text, expresion(actual.ChildNodes.ElementAt(2)), actual.ChildNodes.ElementAt(0).Token.Location.Line, actual.ChildNodes.ElementAt(0).Token.Location.Column);
+            Identificador id = new Identificador(actual.ChildNodes.ElementAt(0).Token.Text, null, actual.ChildNodes.ElementAt(0).Token.Location.Line, actual.ChildNodes.ElementAt(0).Token.Location.Column);
+            return new Asignacion(id, expresion(actual.ChildNodes.ElementAt(2)), actual.ChildNodes.ElementAt(0).Token.Location.Line, actual.ChildNodes.ElementAt(0).Token.Location.Column);
         }
 
         private Expresion inicializarVariable(Constante.Type tipo)
@@ -230,7 +288,7 @@ namespace OCL2_Proyecto2_201800586.Analizador
             }
         }
 
-        public Instruccion IF(ParseTreeNode actual)
+        private Instruccion IF(ParseTreeNode actual)
         {
             if (actual.ChildNodes.Count == 4)
             {
@@ -293,14 +351,14 @@ namespace OCL2_Proyecto2_201800586.Analizador
         {
             Identificador id = new Identificador(actual.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text, null, 0, 0);
             Aritmetica incrementar = new Aritmetica(id, new Primitivo(1, Constante.Type.INT, 0, 0), Constante.AritmeticaSigno.MAS, 0, 0);
-            return new Asignacion(actual.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text, incrementar, 0, 0);
+            return new Asignacion(id, incrementar, 0, 0);
         }
 
         private Asignacion dec(ParseTreeNode actual)
         {
             Identificador id = new Identificador(actual.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text, null, 0, 0);
             Aritmetica incrementar = new Aritmetica(id, new Primitivo(1, Constante.Type.INT, 0, 0), Constante.AritmeticaSigno.MENOS, 0, 0);
-            return new Asignacion(actual.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text, incrementar, 0, 0);
+            return new Asignacion(id, incrementar, 0, 0);
         }
 
         private Instruccion SWITCH(ParseTreeNode actual)
@@ -342,6 +400,16 @@ namespace OCL2_Proyecto2_201800586.Analizador
                 default:
                     return new Print(expresiones(actual.ChildNodes.ElementAt(1)), true, actual.ChildNodes.ElementAt(0).Token.Location.Line, actual.ChildNodes.ElementAt(0).Token.Location.Column);
             }
+        }
+
+        private Instruccion CONTINUE(ParseTreeNode actual)
+        {
+            return new Continue(actual.Token.Location.Line, actual.Token.Location.Column);
+        }
+
+        private Instruccion BREAK(ParseTreeNode actual)
+        {
+            return new Break(actual.Token.Location.Line, actual.Token.Location.Column);
         }
 
         private LinkedList<Expresion> expresiones(ParseTreeNode actual)

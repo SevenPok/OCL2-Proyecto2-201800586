@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analizador\ErrorHandler.cs" />
     <Compile Include="Analizador\Gramatica.cs" />
     <Compile Include="Analizador\Analizador.cs" />
     <Compile Include="Arbol\Constante.cs" />
@@ -63,6 +64,8 @@
     <Compile Include="Arbol\Expresiones\Relacional.cs" />
     <Compile Include="Arbol\Generator.cs" />
     <Compile Include="Arbol\Instrucciones\Asignacion.cs" />
+    <Compile Include="Arbol\Instrucciones\Break.cs" />
+    <Compile Include="Arbol\Instrucciones\Continue.cs" />
     <Compile Include="Arbol\Instrucciones\Declaracion.cs" />
     <Compile Include="Arbol\Instrucciones\Declaraciones.cs" />
     <Compile Include="Arbol\Instrucciones\DeclaracionFuncion.cs" />
@@ -89,6 +92,8 @@
     </Compile>
     <Compile Include="Graficar\Dot.cs" />
     <Compile Include="Graficar\GenerarGrafo.cs" />
+    <Compile Include="Graficar\Reporte.cs" />
+    <Compile Include="Optimizacion\GramaticaOp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

@@ -25,8 +25,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
             this.id = id;
             this.type = type;
             this.value = value;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
         }
 
         public Return traducir(Entorno ts)
@@ -34,7 +34,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
             Generator generator = Generator.getInstance();
             Return compiled = this.value?.traducir(ts);
 
-            if (compiled == null) throw new Error(this.linea, this.columna, "Semantico", "No se puede operars");
+            if (compiled == null) throw new Error(this.linea, this.columna, "Semantico", "No se puede declarar la varaible '" + id + "'");
             if (this.type == Constante.Type.DOUBLE)
             {
                 if (compiled.type == Constante.Type.INT || compiled.type == Constante.Type.DOUBLE)
@@ -43,25 +43,25 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
                 }
                 else
                 {
-                    throw new Error(this.linea, this.columna, "Semantico", "No se puede operars");
+                    throw new Error(this.linea, this.columna, "Semantico", "No se puede asignar un " + type + " con un " + compiled.type);
                 }
             }
-            else if (!Constante.sameType(this.type, compiled.type)) throw new Error(this.linea, this.columna, "Semantico", "No se puede operars");
-            Simbolo newVariable = ts.addVariable(this.id, this.type, this.access, false);
-            if (newVariable == null) throw new Error(this.linea, this.columna, "Semantico", "No se puede operars");
+            else if (!Constante.sameType(this.type, compiled.type)) throw new Error(this.linea, this.columna, "Semantico", "No se puede asignar un " + type + " con un " + compiled.type);
+            Simbolo newVariable = ts.addVariable(this.id, this.type, this.access, false, linea, columna);
+            if (newVariable == null) throw new Error(this.linea, this.columna, "Semantico", "La variable '" + id + "' ya existe");
             if (newVariable.isGlobal)
             {
                 if (this.type == Constante.Type.BOOLEAN)
                 {
                     String templabel = generator.newLabel();
                     generator.addLabel(compiled.trueLabel);
-                    generator.addSetStack(newVariable.position.ToString(), "1");
+                    generator.addSetStack("(int)" + newVariable.position.ToString(), "1");
                     generator.addGoto(templabel);
                     generator.addLabel(compiled.falseLabel);
-                    generator.addSetStack(newVariable.position.ToString(), "0");
+                    generator.addSetStack("(int)" + newVariable.position.ToString(), "0");
                     generator.addLabel(templabel);
                 }
-                else generator.addSetStack(newVariable.position.ToString(), compiled.getValue());
+                else generator.addSetStack("(int)" + newVariable.position.ToString(), compiled.getValue());
             }
             else
             {
@@ -71,17 +71,17 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
                     String templabel = generator.newLabel();
                     generator.addLabel(compiled.trueLabel);
                     generator.AddExp(temp, "P", newVariable.position.ToString(), "+");
-                    generator.addSetStack(temp, "1");
+                    generator.addSetStack("(int)" + temp, "1");
                     generator.addGoto(templabel);
                     generator.addLabel(compiled.falseLabel);
                     generator.AddExp(temp, "P", newVariable.position.ToString(), "+");
-                    generator.addSetStack(temp, "0");
+                    generator.addSetStack("(int)" + temp, "0");
                     generator.addLabel(templabel);
                 }
                 else
                 {
                     generator.AddExp(temp, "P", newVariable.position.ToString(), "+");
-                    generator.addSetStack(temp, compiled.getValue());
+                    generator.addSetStack("(int)" + temp, compiled.getValue());
                 }
             }
             return null;

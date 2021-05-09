@@ -19,7 +19,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
         public Exit(Expresion value, int linea, int columna)
         {
             this.value = value;
-            this.linea = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
         }
         public Return traducir(Entorno ts)
         {
@@ -33,7 +34,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
 
             if (symbolFunction == null) throw new Error(this.linea, this.columna, "Semantico", "Error con la funcion exit");
 
-            if (!Constante.sameType(symbolFunction.type, value.type)) throw new Error(this.linea, this.columna, "Semantical", "El retorno no es del mismo tipo");
+            if (!Constante.sameType(symbolFunction.type, value.type)) throw new Error(this.linea, this.columna, "Semantico", "El retorno no es del mismo tipo");
 
             if (symbolFunction.type == Constante.Type.BOOLEAN)
             {
@@ -42,7 +43,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
                 generator.addSetStack("P", "1");
                 generator.addGoto(templabel);
                 generator.addLabel(value.falseLabel);
-                generator.addSetStack("p", "0");
+                generator.addSetStack("P", "0");
                 generator.addLabel(templabel);
             }
             else if (symbolFunction.type != Constante.Type.VOID) generator.addSetStack("P", value.getValue());

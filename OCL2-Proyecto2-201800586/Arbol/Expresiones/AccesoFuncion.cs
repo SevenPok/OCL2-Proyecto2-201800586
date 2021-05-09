@@ -21,20 +21,21 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
         {
             this.id = id;
             this.parametros = parametros;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
+            trueLabel = falseLabel = "";
         }
         public Return traducir(Entorno ts)
         {
             SimboloFuncion symbolFunction = ts.searchFunction(this.id);
-            if (symbolFunction == null) throw new Error(this.linea, this.columna, "Semantical", "No se encontro la fucnion");
+            if (symbolFunction == null) throw new Error(this.linea, this.columna, "Semantico", "No se encontro la funcion: " + id);
             LinkedList<Return> paramsValues = new LinkedList<Return>();
             Generator generator = Generator.getInstance();
             int size = generator.saveTemps(ts);
 
             int registeredLength = symbolFunction.parametros.Count;
             int incomingLength = this.parametros.Count;
-            if (registeredLength != incomingLength) throw new Error(this.linea, this.columna, "Semantical", "No se esperaban esos argumentos");
+            if (registeredLength != incomingLength) throw new Error(this.linea, this.columna, "Semantico", "No se esperaban esos argumentos en la funcion: " + id);
             int i = 0;
             String temp;
             foreach (Expresion p in parametros)
@@ -42,7 +43,7 @@ namespace OCL2_Proyecto2_201800586.Arbol.Expresiones
                 Return compiledParam = p.traducir(ts);
                 Constante.Type registeredType = symbolFunction.parametros.ElementAt(i).type;
                 Constante.Type incomingType = compiledParam.type;
-                if (registeredType != incomingType) throw new Error(this.linea, this.columna, "Semantical", "El tipo de dato no es el esperado");
+                if (registeredType != incomingType) throw new Error(this.linea, this.columna, "Semantico", "El tipo de dato no es el esperado");
                 if (incomingType == Constante.Type.BOOLEAN)
                 {
                     temp = generator.newTemp();

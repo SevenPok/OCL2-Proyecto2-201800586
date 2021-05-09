@@ -20,8 +20,8 @@ namespace OCL2_Proyecto2_201800586.Arbol.Instrucciones
         {
             this.expresiones = expresiones;
             this.salto = salto;
-            this.linea = linea;
-            this.columna = columna;
+            this.linea = linea + 1;
+            this.columna = columna + 1;
         }
         public Return traducir(Entorno ts)
         {
